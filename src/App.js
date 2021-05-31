@@ -1,18 +1,23 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import {
   BrowserRouter as Router,
   Redirect,
   Route,
   Switch,
 } from 'react-router-dom'
+// const OtherComponent = React.lazy(() => import('./OtherComponent'));
 import { Navbar } from './app/Navbar'
-import NotificationsList from './features/notifications/NotificationsList'
-import AddPostForm from './features/post/AddPostForm'
-import EditPostForm from './features/post/EditPostForm'
 import PostsList from './features/post/PostsList'
-import SinglePostPage from './features/post/SinglePostPage'
-import UserPage from './features/users/UserPage'
-import UsersList from './features/users/UsersList'
+const NotificationsList = React.lazy(() =>
+  import('./features/notifications/NotificationsList')
+)
+const AddPostForm = React.lazy(() => import('./features/post/AddPostForm'))
+const EditPostForm = React.lazy(() => import('./features/post/EditPostForm'))
+const SinglePostPage = React.lazy(() =>
+  import('./features/post/SinglePostPage')
+)
+const UserPage = React.lazy(() => import('./features/users/UserPage'))
+const UsersList = React.lazy(() => import('./features/users/UsersList'))
 
 function App() {
   return (
@@ -21,12 +26,14 @@ function App() {
       <div className="App">
         <Switch>
           <Route exact path="/" render={() => <PostsList />} />
-          <Route path="/addPost" component={AddPostForm} />
-          <Route exact path="/users" component={UsersList} />
-          <Route exact path="/notifications" component={NotificationsList} />
-          <Route exact path="/posts/:postId" component={SinglePostPage} />
-          <Route exact path="/editPost/:postId" component={EditPostForm} />
-          <Route exact path="/users/:userId" component={UserPage} />
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <Route path="/addPost" component={AddPostForm} />
+            <Route exact path="/users" component={UsersList} />
+            <Route exact path="/notifications" component={NotificationsList} />
+            <Route exact path="/posts/:postId" component={SinglePostPage} />
+            <Route exact path="/editPost/:postId" component={EditPostForm} />
+            <Route exact path="/users/:userId" component={UserPage} />
+          </Suspense>
           <Redirect to="/" />
         </Switch>
       </div>
